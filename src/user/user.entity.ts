@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Deck } from '../decks/deck.entity';
 
 @Entity()
 export class User {
@@ -10,6 +11,10 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToMany(() => Deck, (deck) => deck.user)
+  decks: Deck[];
+
 
   // You can add more columns as required
 }
