@@ -14,19 +14,19 @@ export class Deck {
     id: string;
 
     @Column()
-    content: string;
+    title: string;
 
     @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-    timestamp: Date;
+    createdAt: Date;
+
+    @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 
     @Column({ nullable: true })
     image: string;
 
     @Column({ default: 0 })
-    likeCount: number;
-
-    @Column({ default: 0 })
-    commentCount: number;
+    numberOfCards: number;
 
     @ManyToOne(() => User, (user) => user.decks)
     @JoinColumn({ name: 'userId' })
