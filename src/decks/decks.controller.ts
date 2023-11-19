@@ -7,8 +7,10 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
 import { DeckOwnershipGuard } from 'src/guards/deck-owner.guard';
+import { UserService } from 'src/user/user.service';
 
 type DeckResponseWithPagination = {
+    filter?: string;
     search?: string;
     data: DeckResponseDto[];
     pagination: {
@@ -20,7 +22,48 @@ type DeckResponseWithPagination = {
 @UseGuards(JwtAuthGuard)
 @Controller('decks')
 export class DecksController {
-    constructor(private readonly decksService: DecksService) {}
+    constructor(
+        private readonly decksService: DecksService,
+        private readonly userService: UserService
+    ) {}
+
+    @Get()
+    async findAll(
+        @Query('limit') limit: number = 10,
+        @Query('offset') offset: number = 0,
+        @Query('search') search: string,
+        @Query('username') username?: string,
+    ): Promise<DeckResponseWithPagination> {
+        let userId: number | undefined;
+
+        if (username) {
+            const user = await this.userService.findOne(username);
+            if (!user) {
+                throw new NotFoundException(`User with username ${username} not found`);
+            }
+            userId = user.id;
+        }
+
+        const decks = await this.decksService.findAll(
+            limit,
+            offset,
+            search,
+            userId,
+        );
+
+        return {
+            filter: username,
+            search,
+            pagination: {
+                limit,
+                offset,
+            },
+            data: decks.map((deck) => {
+                delete deck.userId;
+                return deck;
+            }),
+        };
+    }
 
     // Create new Deck
     @Post()
@@ -79,26 +122,6 @@ export class DecksController {
         return {
             statusCode: 200,
             message: 'Deck deleted successfully',
-        };
-    }
-
-    @Get()
-    async findAll(
-        @Query('limit') limit: number = 10,
-        @Query('offset') offset: number = 0,
-        @Query('search') search: string,
-    ): Promise<DeckResponseWithPagination> {
-        const decks = await this.decksService.findAll(limit, offset, search);
-        return {
-            search,
-            pagination: {
-                limit,
-                offset,
-            },
-            data: decks.map((deck) => {
-                delete deck.userId;
-                return deck;
-            }),
         };
     }
 

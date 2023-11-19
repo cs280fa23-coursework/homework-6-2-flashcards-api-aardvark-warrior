@@ -49,14 +49,26 @@ export class DecksService {
         limit: number, 
         offset: number,
         search?: string,
+        userId?: number,
     ): Promise<Deck[]> {
         const queryBuilder = this.deckRepository.createQueryBuilder('decks');
+        let hasWhereCondition = false;
 
         if (search !== undefined) {
             queryBuilder.where('decks.title ILIKE :search', {
                 search: `%${search}%`,
             });
+            hasWhereCondition = true;
         }
+
+        if (userId !== undefined) {
+            if (hasWhereCondition) {
+              queryBuilder.andWhere('decks.userId = :userId', { userId });
+            } else {
+              queryBuilder.where('decks.userId = :userId', { userId });
+              hasWhereCondition = true;
+            }
+          }
 
         queryBuilder.limit(limit);
         queryBuilder.offset(offset);
