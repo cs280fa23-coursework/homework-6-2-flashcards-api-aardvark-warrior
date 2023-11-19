@@ -1,4 +1,4 @@
-import { Patch, Get, Param, Post, Body, Controller, NotFoundException } from '@nestjs/common';
+import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
@@ -9,6 +9,7 @@ import { UpdateDeckDto } from './update-deck.dto';
 export class DecksController {
     constructor(private readonly decksService: DecksService) {}
 
+    // Create new Deck
     @Post()
     async create(
         @Body() createDeckDto: CreateDeckDto,
@@ -20,6 +21,7 @@ export class DecksController {
         return deck;
     }
 
+    // Get a deck by id
     @Get(':id')
     async findOne(@Param('id') id: string): Promise<DeckResponseDto> {
         const deck = await this.decksService.findOne(id);
@@ -30,6 +32,7 @@ export class DecksController {
         return deck;
     }
 
+    // Update a deck by id
     @Patch(':id')
     async update(
         @Param('id') id: string,
@@ -43,7 +46,20 @@ export class DecksController {
         return deck;
     }
 
-
+    // Delete a deck by id
+    @Delete(':id')
+    async remove(
+        @Param('id') id: string,
+    ): Promise<{ statusCode: number; message: string }> {
+        const deck = await this.decksService.remove(id);
+        if (!deck) {
+            throw new NotFoundException(`Deck with ID ${id} not found`);
+        }
+        return {
+            statusCode: 200,
+            message: 'Deck deleted successfully',
+        };
+    }
 
     // We will add handlers for CRUD endpoints here
 }

@@ -34,6 +34,15 @@ export class DecksService {
         }
         return this.deckRepository.save(deck);
     }
+    
+    // Delete a Deck
+    async remove(id: string): Promise<Deck | null> {
+        const deck = await this.findOne(id);
+        if (!deck) {
+            return null;
+        }
+        return this.deckRepository.remove(deck);
+    }
       
       
       
