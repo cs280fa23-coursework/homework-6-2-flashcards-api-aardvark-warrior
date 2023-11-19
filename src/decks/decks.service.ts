@@ -18,6 +18,11 @@ export class DecksService {
         });
         return this.deckRepository.save(deck);
     }
+
+    async findOne(id: string): Promise<Deck | null> {
+        return this.deckRepository.findOneBy({ id });
+    }
+      
       
 
     // We'll add methods for handling CRUD operations here

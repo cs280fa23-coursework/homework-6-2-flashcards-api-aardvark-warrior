@@ -1,4 +1,4 @@
-import { Post, Body, Controller } from '@nestjs/common';
+import { Get, Param, Post, Body, Controller, NotFoundException } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
@@ -14,6 +14,17 @@ export class DecksController {
         delete deck.userId;
         return deck;
     }
+
+    @Get(':id')
+    async findOne(@Param('id') id: string): Promise<DeckResponseDto> {
+        const deck = await this.decksService.findOne(id);
+        if (!deck) {
+            throw new NotFoundException(`Deck with ID ${id} not found`);
+        }
+        delete deck.userId;
+        return deck;
+    }
+
 
     // We will add handlers for CRUD endpoints here
 }
