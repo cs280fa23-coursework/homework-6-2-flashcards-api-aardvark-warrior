@@ -45,7 +45,7 @@ import { DecksModule } from './decks/decks.module';
       }),
       inject: [ConfigService],
     }),
-    DecksModule
+    DecksModule,
   ],
   controllers: [AppController, UserController],
   providers: [AppService, AuthService, LocalStrategy, JwtStrategy, UserService],

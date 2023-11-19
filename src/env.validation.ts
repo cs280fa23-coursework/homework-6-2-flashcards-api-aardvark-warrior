@@ -1,5 +1,11 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNumber, IsString, IsEnum, validateSync, MinLength } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsEnum,
+  validateSync,
+  MinLength,
+} from 'class-validator';
 
 enum Environment {
   Development = 'development',
@@ -33,7 +39,7 @@ class EnvironmentVariables {
 
   @IsString()
   JWT_EXPIRATION: string;
-  }
+}
 
 export function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, {

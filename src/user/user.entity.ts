@@ -15,6 +15,5 @@ export class User {
   @OneToMany(() => Deck, (deck) => deck.user)
   decks: Deck[];
 
-
   // You can add more columns as required
 }
