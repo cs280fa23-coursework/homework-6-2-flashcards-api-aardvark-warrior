@@ -1,4 +1,4 @@
-import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException } from '@nestjs/common';
+import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException, Req } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
@@ -16,9 +16,8 @@ export class DecksController {
     @Post()
     async create(
         @Body() createDeckDto: CreateDeckDto,
-        // @UserId() userId: number,
+        @UserId() userId: number,               
     ): Promise<DeckResponseDto> {
-        const userId = 1; // TODO: get userId from JWT token
         const deck = await this.decksService.create(createDeckDto, userId);
         delete deck.userId;
         return deck;
