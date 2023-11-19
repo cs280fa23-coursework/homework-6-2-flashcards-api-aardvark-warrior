@@ -45,8 +45,18 @@ export class DecksService {
     }
 
     // Retrieve all decks
-    async findAll(limit: number, offset: number): Promise<Deck[]> {
+    async findAll(
+        limit: number, 
+        offset: number,
+        search?: string,
+    ): Promise<Deck[]> {
         const queryBuilder = this.deckRepository.createQueryBuilder('decks');
+
+        if (search !== undefined) {
+            queryBuilder.where('decks.title ILIKE :search', {
+                search: `%${search}%`,
+            });
+        }
 
         queryBuilder.limit(limit);
         queryBuilder.offset(offset);

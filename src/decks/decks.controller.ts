@@ -9,6 +9,7 @@ import { UserId } from 'src/decorators/user-id.decorator';
 import { DeckOwnershipGuard } from 'src/guards/deck-owner.guard';
 
 type DeckResponseWithPagination = {
+    search?: string;
     data: DeckResponseDto[];
     pagination: {
         limit: number;
@@ -85,9 +86,11 @@ export class DecksController {
     async findAll(
         @Query('limit') limit: number = 10,
         @Query('offset') offset: number = 0,
+        @Query('search') search: string,
     ): Promise<DeckResponseWithPagination> {
-        const decks = await this.decksService.findAll(limit, offset);
+        const decks = await this.decksService.findAll(limit, offset, search);
         return {
+            search,
             pagination: {
                 limit,
                 offset,
