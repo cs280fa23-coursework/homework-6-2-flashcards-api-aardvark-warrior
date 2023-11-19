@@ -16,7 +16,6 @@ type DeckResponseWithPagination = {
     };
 };
   
-
 @UseGuards(JwtAuthGuard)
 @Controller('decks')
 export class DecksController {
@@ -99,7 +98,6 @@ export class DecksController {
             }),
         };
     }
-
 
     // We will add handlers for CRUD endpoints here
 }

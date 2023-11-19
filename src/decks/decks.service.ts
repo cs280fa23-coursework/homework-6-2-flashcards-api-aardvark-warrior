@@ -51,6 +51,8 @@ export class DecksService {
         queryBuilder.limit(limit);
         queryBuilder.offset(offset);
 
+        queryBuilder.orderBy('decks.createdAt', 'DESC');
+
         return await queryBuilder.getMany();
     }
 
