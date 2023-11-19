@@ -10,7 +10,7 @@ services:
   db:
     image: postgres:15-alpine
     restart: always
-    container_name: postgres-for-posts-api
+    container_name: postgres-for-decks-api-awang91
     ports:
       - '${DB_PORT}:5432' # HOST_PORT:CONTAINER_PORT
     environment:

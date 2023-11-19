@@ -43,9 +43,11 @@ export class DecksService {
         }
         return this.deckRepository.remove(deck);
     }
-      
-      
-      
+
+    // Retrieve all decks
+    async findAll(): Promise<Deck[]> {
+        return this.deckRepository.find();
+    }
 
     // We'll add methods for handling CRUD operations here
 }

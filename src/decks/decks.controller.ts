@@ -13,9 +13,9 @@ export class DecksController {
     @Post()
     async create(
         @Body() createDeckDto: CreateDeckDto,
-        @UserId() userId: number,
+        // @UserId() userId: number,
     ): Promise<DeckResponseDto> {
-        // const userId = 1; // TODO: get userId from JWT token
+        const userId = 1; // TODO: get userId from JWT token
         const deck = await this.decksService.create(createDeckDto, userId);
         delete deck.userId;
         return deck;
@@ -60,6 +60,16 @@ export class DecksController {
             message: 'Deck deleted successfully',
         };
     }
+
+    @Get()
+    async findAll(): Promise<DeckResponseDto[]> {
+        const posts = await this.decksService.findAll();
+        return posts.map((post) => {
+            delete post.userId;
+            return post;
+        });
+    }
+
 
     // We will add handlers for CRUD endpoints here
 }
