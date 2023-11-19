@@ -8,6 +8,15 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
 import { DeckOwnershipGuard } from 'src/guards/deck-owner.guard';
 
+type DeckResponseWithPagination = {
+    data: DeckResponseDto[];
+    pagination: {
+        limit: number;
+        offset: number;
+    };
+};
+  
+
 @UseGuards(JwtAuthGuard)
 @Controller('decks')
 export class DecksController {
@@ -75,14 +84,20 @@ export class DecksController {
 
     @Get()
     async findAll(
-        @Query('limit') limit: number,
-        @Query('offset') offset: number,
-    ): Promise<DeckResponseDto[]> {
+        @Query('limit') limit: number = 10,
+        @Query('offset') offset: number = 0,
+    ): Promise<DeckResponseWithPagination> {
         const decks = await this.decksService.findAll(limit, offset);
-        return decks.map((deck) => {
-            delete deck.userId;
-            return deck;
-        });
+        return {
+            pagination: {
+                limit,
+                offset,
+            },
+            data: decks.map((deck) => {
+                delete deck.userId;
+                return deck;
+            }),
+        };
     }
 
 
