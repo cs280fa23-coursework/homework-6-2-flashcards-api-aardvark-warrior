@@ -6,9 +6,9 @@ import { UpdateDeckDto } from './update-deck.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
-import { DeckOwnershipGuard } from 'src/guards/post-owner.guard';
+import { DeckOwnershipGuard } from 'src/guards/deck-owner.guard';
 
-@UseGuards(JwtAuthGuard, DeckOwnershipGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('decks')
 export class DecksController {
     constructor(private readonly decksService: DecksService) {}
@@ -25,6 +25,7 @@ export class DecksController {
     }
 
     // Get a deck by id
+    @UseGuards(DeckOwnershipGuard)
     @Get(':id')
     async findOne(@Param('id') id: string): Promise<DeckResponseDto> {
         const deck = await this.decksService.findOne(id);
@@ -36,6 +37,7 @@ export class DecksController {
     }
 
     // Update a deck by id
+    @UseGuards(DeckOwnershipGuard)
     @Patch(':id')
     async update(
         @Param('id') id: string,
@@ -56,6 +58,7 @@ export class DecksController {
     }
 
     // Delete a deck by id
+    @UseGuards(DeckOwnershipGuard)
     @Delete(':id')
     async remove(
         @Param('id') id: string,
