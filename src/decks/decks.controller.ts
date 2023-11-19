@@ -2,9 +2,12 @@ import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException } 
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
-import { UserId } from 'src/decorators/user-id.decorator';
 import { UpdateDeckDto } from './update-deck.dto';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { UserId } from 'src/decorators/user-id.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('decks')
 export class DecksController {
     constructor(private readonly decksService: DecksService) {}
