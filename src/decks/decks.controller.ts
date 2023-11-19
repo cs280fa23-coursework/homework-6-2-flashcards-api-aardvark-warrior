@@ -1,4 +1,4 @@
-import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException, Req } from '@nestjs/common';
+import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException, Req, ForbiddenException } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
@@ -6,8 +6,9 @@ import { UpdateDeckDto } from './update-deck.dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserId } from 'src/decorators/user-id.decorator';
+import { DeckOwnershipGuard } from 'src/guards/post-owner.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, DeckOwnershipGuard)
 @Controller('decks')
 export class DecksController {
     constructor(private readonly decksService: DecksService) {}
@@ -39,11 +40,17 @@ export class DecksController {
     async update(
         @Param('id') id: string,
         @Body() updateDeckDto: UpdateDeckDto,
+        @UserId() userId: number,
     ): Promise<DeckResponseDto> {
-        const deck = await this.decksService.update(id, updateDeckDto);
+        let deck = await this.decksService.findOne(id);
+        
         if (!deck) {
             throw new NotFoundException(`Deck with ID ${id} not found`);
+        } else if (deck.userId !== userId) {
+            throw new ForbiddenException();
         }
+
+        deck = await this.decksService.update(id, updateDeckDto);
         delete deck.userId;
         return deck;
     }
