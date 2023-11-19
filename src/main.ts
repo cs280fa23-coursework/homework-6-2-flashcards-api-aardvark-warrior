@@ -7,7 +7,7 @@ import { HttpResponseInterceptor } from './interceptors/http-response.intercepto
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new HttpResponseFilter());  // <-- Add this line
+  app.useGlobalFilters(new HttpResponseFilter()); // <-- Add this line
   app.useGlobalInterceptors(new HttpResponseInterceptor());
   await app.listen(3000);
 }
