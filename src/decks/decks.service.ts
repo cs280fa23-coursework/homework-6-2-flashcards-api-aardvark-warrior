@@ -45,8 +45,13 @@ export class DecksService {
     }
 
     // Retrieve all decks
-    async findAll(): Promise<Deck[]> {
-        return this.deckRepository.find();
+    async findAll(limit: number, offset: number): Promise<Deck[]> {
+        const queryBuilder = this.deckRepository.createQueryBuilder('decks');
+
+        queryBuilder.limit(limit);
+        queryBuilder.offset(offset);
+
+        return await queryBuilder.getMany();
     }
 
     // We'll add methods for handling CRUD operations here

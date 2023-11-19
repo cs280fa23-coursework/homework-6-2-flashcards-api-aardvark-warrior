@@ -1,4 +1,4 @@
-import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException, Req, ForbiddenException } from '@nestjs/common';
+import { Delete, Patch, Get, Param, Post, Body, Controller, NotFoundException, Req, ForbiddenException, Query } from '@nestjs/common';
 import { DecksService } from './decks.service';
 import { CreateDeckDto } from './create-deck.dto';
 import { DeckResponseDto } from './deck-response.dto';
@@ -74,11 +74,14 @@ export class DecksController {
     }
 
     @Get()
-    async findAll(): Promise<DeckResponseDto[]> {
-        const posts = await this.decksService.findAll();
-        return posts.map((post) => {
-            delete post.userId;
-            return post;
+    async findAll(
+        @Query('limit') limit: number,
+        @Query('offset') offset: number,
+    ): Promise<DeckResponseDto[]> {
+        const decks = await this.decksService.findAll(limit, offset);
+        return decks.map((deck) => {
+            delete deck.userId;
+            return deck;
         });
     }
 
